@@ -1,16 +1,26 @@
-.starIcon {
-    color: #ffcd45;
-}
-
 .starsContainer {
     margin-left: 5px;
     width: fit-content;
-}
-
-.numOfRatingsVal {
-    margin-left: 15px;
+    gap: 3px;
 }
 
 .ratingVal {
     margin: 0;
+}
+
+.resetScoreBtn {
+    margin-left: 10px;
+    width: auto;
+    height: auto;
+    aspect-ratio: 1/1;
+}
+
+.resetScoreIcon {
+    cursor: pointer;
+    color: #bec5cc;
+}
+
+.hidden {
+    visibility: hidden !important;
+    cursor: default !important;
 }

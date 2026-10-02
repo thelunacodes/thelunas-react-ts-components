@@ -1,0 +1,12 @@
+.starIcon {
+    color: #ffcd45;
+    
+    width: var(--star-width);
+    height: auto;
+    aspect-ratio: 1/1;
+}
+
+
+.blue {
+    color: #ffc23d
+}
