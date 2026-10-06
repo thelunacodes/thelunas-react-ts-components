@@ -1,0 +1,63 @@
+.cardDemoExample1,
+.cardDemoExample2,
+.cardDemoContainer,
+.cardDemoButton {
+    width: 100%;
+}
+
+.cardDemoExample1 {
+    height: 100%;
+}
+
+.cardDemoExample2 {
+    padding: 45px 20px;
+}
+
+.cardDemoContainer,
+.cardDemoSignInFields {
+    gap: 15px;
+}
+
+.cardDemoSignInFields {
+    margin-top: 67px;
+}
+
+label {
+    font-size: 1rem;
+    margin: 0;
+}
+
+#email-input,
+#password-input {
+    font-size: 1rem;
+    font-family: var(--default-font);
+    padding: 8px 14px;
+    width: 300px;
+}
+
+.cardDemoButton {
+    padding: 8px;
+    margin: none;   
+
+    font-family: var(--default-font);
+    font-size: 1rem;
+    font-weight: 550;
+    
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+#btn-sign-in { 
+    background-color: #4c00ff;
+    border-color: #4c00ff;
+    color: #ffffff;
+}
+
+#btn-sign-on {
+    background-color: #ffffff;
+    border-color: #4c00ff;
+    color: #4c00ff
+}

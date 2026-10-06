@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { faStar, faStarHalfStroke, faX, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faEmptyStar } from "@fortawesome/free-regular-svg-icons";
 
@@ -43,40 +43,37 @@ function getStarList(rating:number, maxRating:number, showEmptyStars:boolean):Ic
 }
 
 export default function StarRating({ starWidth='20px', rating=0, ratingSetter, maxRating=5, showEmptyStars=false } : StarRatingType) {
-    const [starsIcon, setStarsIcon] =useState<IconDefinition[]>([])
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [ratingHover, setRatingHover] = useState<number>(rating);
     
-    useEffect(() => {
-        let targetRating = isHovering ? ratingHover : rating;
-        setStarsIcon(getStarList(targetRating, maxRating, showEmptyStars));
-    }, [rating, ratingHover, isHovering])
-
-    function resetScore() {
-        if (ratingSetter && rating !== 0) {
-            ratingSetter(0);
-        }
-    }
+    // Handle invalid values 
+    const safeRating = Math.min(Math.max(rating, 0), maxRating);
+    const safeStarWidth = !CSS.supports("width",starWidth) ? '20px' : starWidth;
+    
+    // Render stars
+    let targetRating = isHovering ? ratingHover : safeRating;
+    let starsIcon = getStarList(targetRating, maxRating, showEmptyStars);
 
     return (
         <div className="flex row vCenter">
-            <p className="ratingVal">{rating.toFixed(1)}</p>
-            <div className="flex row starsContainer" onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)}>
+            <p className="ratingVal semibold">{safeRating.toFixed(1)}</p>
+            <div className="flex row starsContainer" onMouseOver={() => setIsHovering( ratingSetter !== undefined )} onMouseOut={() => setIsHovering(false)}>
                 {starsIcon.map((ico,idx) => 
-                    <StarIcon icon={ico} 
+                    <React.Fragment key={idx}>
+                        <StarIcon icon={ico} 
                             value={idx+1} 
-                            starWidth={starWidth}
+                            starWidth={safeStarWidth}
                             isHoveringSetter={setIsHovering} 
                             ratingHoverSetter={setRatingHover}
-                            ratingSetter={ratingSetter}/>)
-                }
-
-                
+                            ratingSetter={ratingSetter}/>
+                    </React.Fragment>
+                )}
             </div>
             <div className="flex vCenter resetScoreBtn" title="Reset score"> 
                 <FontAwesomeIcon icon={faX} 
-                    className={`resetScoreIcon ${(ratingSetter && rating === 0 || !ratingSetter) && 'hidden'}`}
-                    onClick={() => resetScore()} />
+                    style={{width: `calc(${safeStarWidth} * 0.5)`}}
+                    className={`resetScoreIcon ${((ratingSetter && rating === 0) || !ratingSetter) && 'hidden'}`}
+                    onClick={() => ratingSetter?.(0)} />
             </div>
         </div>
     )

@@ -1,20 +1,61 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import './App.css'
-import CardBox from './components/CardBox/CardBox'
-import StarRating from './components/StarRating/StarRating'
+import Card from './components/Card/Card'
+
+import './globalStyling.css'
+import CardDemo from './DemoSections/CardDemo/CardDemo';
+import StarRatingDemo from './DemoSections/StarRatingDemo/StarRatingDemo';
 
 function App() {
-  const [rating, setRating] = useState(0);
+
+  function scrollToSection(ref:React.RefObject<HTMLDivElement | null>) {
+    if (!ref.current) return;
+
+    ref.current.scrollIntoView({behavior: 'smooth', block: 'start'})
+  }
+  
+  //refs  
+  const cardRef = useRef<HTMLDivElement>(null);
+  const starRatingRef = useRef<HTMLDivElement>(null);
+
+  const sectionsDict = [
+    { "title": "Card", "refObj": cardRef },
+    { "title": "StarRating", "refObj": starRatingRef },
+  ]
 
   return (
-    <div className='flex vCenter hCenter fullScreen '>
-      <CardBox cardContent={
-        <div style={{padding: "20px"}}>
-          <p>This is a CardBox component.</p>
-          <StarRating showEmptyStars={true} rating={5}/>
-          <StarRating showEmptyStars={true} rating={rating} ratingSetter={setRating}/>
+    <div className='flex column fullScreen hScroll'>
+        <header className='demoPageHeader'>
+            <h1 className='centeredText'>Welcome to the demo page :)</h1>
+        </header>
+        <div className='flex row demoPageColumnContainer'>
+          <div className='demoPageColumn1'>
+
+            <div className='demoPageContents'>
+              <Card children={
+                <div className='demoPageContentsSection'> 
+                    <p className='centeredText semibold'>Contents</p>
+                    <ol>
+                      { sectionsDict.map((section, idx) => 
+                        <li key={idx} className='demoPageContentItem' onClick={() => scrollToSection(section.refObj)}>
+                          {section.title}
+                        </li>)
+                      }
+                    </ol>
+                </div>  
+              }/>
+            </div>
+          </div>  
+          
+          <div className='flex column vCenter demoPageColumn2'>
+
+            <CardDemo cardRef={cardRef} />
+            <StarRatingDemo starRatingRef={starRatingRef} />
+
+          </div>
+          
+          <div className='demoPageColumn3'></div>
         </div>
-      } hasBoxShadow={true} cardBorderRadius='10px' />
     </div>
   )
 }

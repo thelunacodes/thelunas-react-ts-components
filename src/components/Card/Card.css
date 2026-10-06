@@ -1,0 +1,8 @@
+.cardContainer{
+    background-color: #ffffff;
+    border: #e5e5e6 solid 1px;
+    border-radius: 10px;
+    user-select: none;
+    box-sizing: border-box;
+}
+

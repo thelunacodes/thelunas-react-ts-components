@@ -1,10 +1,78 @@
-.flex { display: flex }
-.column { flex-direction: column }
-.row { flex-direction: row }
-.vCenter { align-items: center }
-.hCenter { justify-content: center }
+body {
+  background-color: #fcfcfc;
+}
 
-.fullScreen {
-  height: 100vh;
-  width: 100vw;
+p,
+h1,
+li,
+label {
+  font-family: var(--default-font);
+  margin: 0;
+  user-select: none;
+}
+
+/* "Contents" section */
+.demoPageContents {
+  position: absolute;
+}
+
+.demoPageContentsSection { 
+  padding:10px;
+}
+
+.demoPageContentItem {
+  margin-right: 150px;
+}
+
+.demoPageContentItem:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.demoPageContentItem::marker {
+  font-weight: 500;
+}
+
+/* Columns */
+.demoPageColumnContainer {
+  padding: 0px 40px
+}
+
+.demoPageHeader {
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.demoPageHeader,
+.demoPageColumn1,
+.demoPageColumn2,
+.demoPageColumn3 {
+  padding: 20px;
+}
+
+.demoPageColumn1,
+.demoPageColumn2,
+.demoPageColumn3 {
+  display: flex;
+  flex-direction: column;
+}
+
+.demoPageColumn1,
+.demoPageColumn3 {
+  width: 60%;
+}
+
+.demoPageColumn2 {
+  width: 700px;
+  max-width: 700px;  
+  gap: 35px;  
+}
+
+/* Sections */
+.demoPageSectionContainer {
+  width: 100%;
+}
+
+.demoPageComponentTitle {
+  margin-bottom: 15px;
 }

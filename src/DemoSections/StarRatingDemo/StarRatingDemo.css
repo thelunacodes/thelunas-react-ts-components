@@ -1,0 +1,13 @@
+.starRatingDemoContainer {
+    width: 100%;
+}
+
+.starRatingDemoOptions {
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.starRatingDemoOptInput {
+    width: 40px;
+    margin: 0px 10px;
+}
