@@ -1,52 +1,87 @@
-import "./StarRating.css"
-
-import { faStar, faStarHalfStroke } from "@fortawesome/free-solid-svg-icons";
+import React, { useState } from "react";
+import { faStar, faStarHalfStroke, faX, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faEmptyStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./StarRating.css"
+import StarIcon from "./StarIcon/StarIcon";
 
 type StarRatingType = {
-    maxScore:number,
-    rating:number,
-    numOfRatings?:number,
-    showEmptyStars:boolean
+    starWidth?:string,
+    showEmptyStars?:boolean,
+
+    rating?:number,
+    ratingSetter?:React.Dispatch<React.SetStateAction<number>>, 
+    maxRating?:number
 }
 
-export default function StarRating({maxScore=5, rating, numOfRatings, showEmptyStars=false}:StarRatingType) {
+function getStarList(rating:number, maxRating:number, showEmptyStars:boolean):IconDefinition[] {
     var hasHalf = rating % 1 != 0;
     var numOfStars = Math.floor(rating);
-    var starsIcon = []
+    var starList:IconDefinition[] = [];
 
     if (rating === 0) {
-        starsIcon.push({icon: faEmptyStar, isEmpty: true});
-        var numOfGrayStars = Math.floor(maxScore - rating) - 1;
+        starList.push(faEmptyStar);
+        var numOfGrayStars = Math.floor(maxRating - rating) - 1;
     } else {
         for (let i = 0; i < numOfStars; i++) {
-            starsIcon.push({icon: faStar, isEmpty: false});
+            starList.push(faStar);
         }
             
-        if (hasHalf) {
-            starsIcon.push({icon: faStarHalfStroke, isEmpty: false});
-        }
+        if (hasHalf) { starList.push(faStarHalfStroke); }
 
-        var numOfGrayStars = Math.floor(maxScore - rating);
+        var numOfGrayStars = Math.floor(maxRating - rating);
     }
 
     if (showEmptyStars) {
-
         for (let i = 0; i < numOfGrayStars; i++) {
-            starsIcon.push({icon: faEmptyStar, isEmpty: true});
+            starList.push(faEmptyStar);
         }        
-    }
+    } 
+
+    return starList;
+}
+
+export default function StarRating({ starWidth='20px', rating=0, ratingSetter, maxRating=5, showEmptyStars=false } : StarRatingType) {
+    const [isHovering, setIsHovering] = useState<boolean>(false);
+    const [ratingHover, setRatingHover] = useState<number>(rating);
+    
+    // Handle invalid values 
+    const safeRating = Math.min(Math.max(rating, 0), maxRating);
+    const safeStarWidth = !CSS.supports("width",starWidth) ? '20px' : starWidth;
+
+    const showResetBtn = !ratingSetter || safeRating === 0;
+
+    
+    // Render stars
+    let targetRating = isHovering ? ratingHover : safeRating;
+    let starsIcon = getStarList(targetRating, maxRating, showEmptyStars);
 
     return (
         <div className="flex row vCenter">
-            <p className="ratingVal">{rating.toFixed(1)}</p>
-            <div className="flex row starsContainer">
-                {starsIcon.map((ico,idx) => <FontAwesomeIcon key={idx} icon={ico.icon} className={`starIcon`} />)}
+            <p className="ratingVal semibold" style={{fontSize: `calc(${safeStarWidth} * 0.8)`}}>{safeRating.toFixed(1)}</p>
+            <div className="flex row starsContainer" onMouseOver={() => setIsHovering( ratingSetter !== undefined )} onMouseOut={() => setIsHovering(false)}>
+                {starsIcon.map((ico,idx) => 
+                    <React.Fragment key={idx}>
+                        <StarIcon icon={ico} 
+                            value={idx+1} 
+                            starWidth={safeStarWidth}
+                            isHoveringSetter={setIsHovering} 
+                            ratingHoverSetter={setRatingHover}
+                            ratingSetter={ratingSetter}/>
+                    </React.Fragment>
+                )}
             </div>
-            {numOfRatings && <p className="numOfRatingsVal">{numOfRatings}</p>}
+            <div className="flex vCenter" > 
+                <button 
+                    type="button" 
+                    onClick={() => ratingSetter?.(0)}
+                    className={`resetScoreBtn flex vCenter ${showResetBtn && 'hidden'}`}
+                    title="Reset score">
+                    <FontAwesomeIcon icon={faX} style={{width: `calc(${safeStarWidth} * 0.5)`}} className={`resetScoreIcon `} />
+                </button>
+                
+            </div>
         </div>
     )
 }
