@@ -71,3 +71,4 @@ Some of the components in this project use *Font Awesome icons*. You can either 
 
     npm install
 
+After that, simply copy the components located in ``src/components`` into your project.
