@@ -9,11 +9,13 @@ import StarIcon from "./StarIcon/StarIcon";
 type StarRatingType = {
     starWidth?:string,
     showEmptyStars?:boolean,
+    readOnly?:boolean,
 
     rating?:number,
     ratingSetter?:React.Dispatch<React.SetStateAction<number>>, 
     maxRating?:number
 }
+
 
 function getStarList(rating:number, maxRating:number, showEmptyStars:boolean):IconDefinition[] {
     var hasHalf = rating % 1 != 0;
@@ -42,7 +44,32 @@ function getStarList(rating:number, maxRating:number, showEmptyStars:boolean):Ic
     return starList;
 }
 
-export default function StarRating({ starWidth='20px', rating=0, ratingSetter, maxRating=5, showEmptyStars=false } : StarRatingType) {
+/**
+ * A star rating display with optional user interaction.
+ * 
+ * Renders a row of stars representing `rating`. When `readOnly` is false and a
+ * `ratingSetter` is provided, hovering previews a score, clicking sets it, and a
+ * reset button clears it back to 0. Half-stars are supported.
+ * 
+ * @param rating - The current star rating, clamped between 0 and `maxRating`. Defaults to `0`.
+ * @param maxRating - The maximum rating value, and the total number of stars displayed if `showEmptyStars` is true. Defaults to `5`.
+ * @param readOnly - If true, disables any user interaction (clicking, hovering). Defaults to `false`.
+ * @param ratingSetter - React state setter used to update the current value of `rating`.
+ * @param showEmptyStars - If true, displays outlined stars for the remaining points up to `maxRating`. Defaults to `false`.
+ * @param starWidth - CSS width of each star (e.g. '24px', '2rem'). The rating text and the reset button scale proporionally. Falls back to '20px' if invalid. Defaults to `'20px'`.
+ * @returns The rendered StarRating element.
+ * 
+ * @example
+ * const [rating, setRating] = useState(0);
+ *
+ * // Interactive
+ * <StarRating rating={rating} ratingSetter={setRating} maxRating={5} showEmptyStars />
+ * 
+ * //Read-only
+ * <StarRating rating={rating} maxRating={5} showEmptyStars readOnly /> 
+ *
+ */
+export default function StarRating({ starWidth='20px', rating=0, ratingSetter, readOnly=false, maxRating=5, showEmptyStars=false } : StarRatingType) {
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [ratingHover, setRatingHover] = useState<number>(rating);
     
@@ -52,7 +79,7 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
     const ratingValFontSize = `calc(${safeStarWidth} * 0.8)`;
     const resetScoreIconWidth = `calc(${safeStarWidth} * 0.5)`;
 
-    const showResetBtn = !ratingSetter || safeRating === 0;
+    const showResetBtn = !readOnly && safeRating > 0;
 
     // Render stars
     let targetRating = isHovering ? ratingHover : safeRating;
@@ -61,7 +88,7 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
     return (
         <div className="starRatingMainContainer">
             <p className="ratingVal" style={{fontSize: ratingValFontSize}}>{safeRating.toFixed(1)}</p>
-            <div className="starsContainer" onMouseOver={() => setIsHovering( ratingSetter !== undefined )} onMouseOut={() => setIsHovering(false)}>
+            <div className="starsContainer" onMouseOver={() => setIsHovering(!readOnly)} onMouseOut={() => setIsHovering(false)}>
                 {starsIcon.map((ico,idx) => 
                     <React.Fragment key={idx}>
                         <StarIcon icon={ico} 
@@ -69,7 +96,8 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
                             starWidth={safeStarWidth}
                             isHoveringSetter={setIsHovering} 
                             ratingHoverSetter={setRatingHover}
-                            ratingSetter={ratingSetter}/>
+                            ratingSetter={ratingSetter}
+                            readOnly={readOnly}/>
                     </React.Fragment>
                 )}
             </div>
@@ -77,7 +105,7 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
                 <button 
                     type="button" 
                     onClick={() => ratingSetter?.(0)}
-                    className={`resetScoreBtn ${showResetBtn && 'hidden'}`}
+                    className={`resetScoreBtn ${!showResetBtn && 'hidden'}`}
                     title="Reset score">
                     <FontAwesomeIcon icon={faX} style={{width: resetScoreIconWidth}} className={`resetScoreIcon`} />
                 </button>

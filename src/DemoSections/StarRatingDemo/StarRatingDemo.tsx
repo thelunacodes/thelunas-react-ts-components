@@ -18,7 +18,7 @@ export default function StarRatingDemo({starRatingRef}:StarRatingDemoType) {
         <div className='demoPageSectionContainer' ref={starRatingRef}>
             <h1 className='demoPageComponentTitle'>StarRating</h1>
             <div className='flex column hScroll starRatingDemoContainer'>
-                <StarRating rating={rating} ratingSetter={readOnly ? undefined : setRating} starWidth={`${starWidth}px`} maxRating={maxRating} showEmptyStars={showEmptyStars} />
+                <StarRating rating={rating} ratingSetter={setRating} starWidth={`${starWidth}px`} maxRating={maxRating} showEmptyStars={showEmptyStars} readOnly={readOnly} />
 
             </div>
             <div className="flex column starRatingDemoOptions">

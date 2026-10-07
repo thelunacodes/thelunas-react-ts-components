@@ -8,6 +8,7 @@ type StarIconType = {
     icon: IconDefinition,
     value: number,
     starWidth?:string, // example: '24px'
+    readOnly:boolean
 
     isHoveringSetter?: React.Dispatch<React.SetStateAction<boolean>>,
     ratingHoverSetter?: React.Dispatch<React.SetStateAction<number>>,
@@ -15,16 +16,20 @@ type StarIconType = {
 }
 
 /**
- * An interactive star icon, meant to be used within the 'StarRating' component.
- * @param icon - Star icon (faStar/faStarHalfStroke/faEmptyStar)
- * @param value - The star icon's score value.
- * @param starWidth - The star icon's CSS width. Height will match this value. Example: '20px'
- * @param isHoveringSetter - Setter for the 'isHovering' parameter.
- * @param ratingHoverSetter - Setter for the temporary rating score value, displayed when the user's mouse cursor is hovering the parent component.
- * @param ratingSetter - Setter for the main rating score value.
- * @returns The rendered star icon element.
+ * A single interactive star icon, meant to be used inside the 'StarRating' component.
+ * 
+ * Hovering previews a score and clicking sets it. 
+ *
+ * @param icon - Star icon to render (`faStar`, `faStarHalfStroke` or `faEmptyStar`).
+ * @param value - The score this star represents when its right half is hovered/clicked.
+ * @param readOnly - If true, ignores user actions (clicking, hovering).
+ * @param isHoveringSetter - Setter for the parent's `isHovering` state. 
+ * @param ratingHoverSetter - Setter for the temporary rating shown while the cursor hovers the stars.
+ * @param ratingSetter - Setter for the main rating value, called on click.
+ * @param starWidth - CSS width of the star (e.g. `'20px'`). Height matches this value.
+ * @returns The rendered StarIcon element.
  */
-export default function StarIcon({icon, value, starWidth, isHoveringSetter, ratingHoverSetter, ratingSetter} : StarIconType) {
+export default function StarIcon({icon, value, starWidth, readOnly, isHoveringSetter, ratingHoverSetter, ratingSetter} : StarIconType) {
     const starRef = useRef<HTMLDivElement>(null);
     
     function isHoveringLeftCorner(mouseEvent:React.MouseEvent<HTMLDivElement>) {
@@ -43,13 +48,15 @@ export default function StarIcon({icon, value, starWidth, isHoveringSetter, rati
     }
 
     function onStarClick(mouseEvent:React.MouseEvent<HTMLDivElement>) {
-        let isHalfHover = isHoveringLeftCorner(mouseEvent)
-        ratingSetter?.(isHalfHover ? value - 0.5 : value)
-        isHoveringSetter?.(false);
+        if (!readOnly) {
+            let isHalfHover = isHoveringLeftCorner(mouseEvent)
+            ratingSetter?.(isHalfHover ? value - 0.5 : value)
+            isHoveringSetter?.(false);
+        }
     }
 
     function onStarHover(mouseEvent:React.MouseEvent<HTMLDivElement>) {
-        if (ratingSetter) {
+        if (!readOnly) {
             let isHalfHover = isHoveringLeftCorner(mouseEvent)
             ratingHoverSetter?.((isHalfHover ? value - 0.5 : value))
         }
