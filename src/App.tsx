@@ -1,7 +1,6 @@
 import React, { useRef } from 'react'
-import './App.css'  
 
-import './globalStyling.css'
+import './App.css'  
 import CardDemo from './demo_page_components/CardDemo/CardDemo';
 import StarRatingDemo from './demo_page_components/StarRatingDemo/StarRatingDemo';
 
