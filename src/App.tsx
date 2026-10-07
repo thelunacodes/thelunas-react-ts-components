@@ -1,6 +1,5 @@
-import { useRef } from 'react'
-import './App.css'
-import Card from './components/Card/Card'
+import React, { useRef } from 'react'
+import './App.css'  
 
 import './globalStyling.css'
 import CardDemo from './DemoSections/CardDemo/CardDemo';
@@ -18,43 +17,44 @@ function App() {
   const cardRef = useRef<HTMLDivElement>(null);
   const starRatingRef = useRef<HTMLDivElement>(null);
 
-  const sectionsDict = [
+  const sectionListDict = [
     { "title": "Card", "refObj": cardRef },
     { "title": "StarRating", "refObj": starRatingRef },
   ]
 
+  const sectionList = [
+    <CardDemo cardRef={cardRef} />,
+    <StarRatingDemo starRatingRef={starRatingRef} />
+  ]
+
   return (
-    <div className='flex column fullScreen hScroll'>
-        <header className='demoPageHeader'>
-            <h1 className='centeredText'>Welcome to the demo page :)</h1>
-        </header>
-        <div className='flex row demoPageColumnContainer'>
-          <div className='demoPageColumn1'>
+    <div className='flex column fullScreen '>
+        <div className='flex row'>
+          <div className='flex column vCenter demoPageColumn1'>
+            <p className='centeredText semibold' style={{padding: '20px', fontSize:'1.1rem'}}>Components</p>
 
-            <div className='demoPageContents'>
-              <Card children={
-                <div className='demoPageContentsSection'> 
-                    <p className='centeredText semibold'>Contents</p>
-                    <ol>
-                      { sectionsDict.map((section, idx) => 
-                        <li key={idx} className='demoPageContentItem' onClick={() => scrollToSection(section.refObj)}>
-                          {section.title}
-                        </li>)
-                      }
-                    </ol>
-                </div>  
-              }/>
+            <div className='demoPageComponentList'>
+              { sectionListDict.map((section, idx) => 
+                <div key={idx} className='demoPageComponentListItem' onClick={() => scrollToSection(section.refObj)}>
+                  <p>{section.title}</p>
+                </div>)
+              }
             </div>
-          </div>  
-          
+            
+          </div> 
+
           <div className='flex column vCenter demoPageColumn2'>
-
-            <CardDemo cardRef={cardRef} />
-            <StarRatingDemo starRatingRef={starRatingRef} />
-
+            <div className='flex column vCenter demoSectionsContainer'>
+              <h1 className='centeredText' style={{marginBottom: '100px'}}>Welcome to the demo page :)</h1>
+              
+              { sectionList.map((section, idx) => 
+                <React.Fragment key={idx}>
+                  {section}
+                  <div className='divider'></div>
+                </React.Fragment>
+              )}
+            </div>
           </div>
-          
-          <div className='demoPageColumn3'></div>
         </div>
     </div>
   )

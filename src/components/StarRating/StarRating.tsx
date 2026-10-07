@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { faStar, faStarHalfStroke, faX, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faEmptyStar } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./StarRating.css"
 import StarIcon from "./StarIcon/StarIcon";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type StarRatingType = {
     starWidth?:string,
@@ -49,6 +49,9 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
     // Handle invalid values 
     const safeRating = Math.min(Math.max(rating, 0), maxRating);
     const safeStarWidth = !CSS.supports("width",starWidth) ? '20px' : starWidth;
+
+    const showResetBtn = !ratingSetter || safeRating === 0;
+
     
     // Render stars
     let targetRating = isHovering ? ratingHover : safeRating;
@@ -56,7 +59,7 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
 
     return (
         <div className="flex row vCenter">
-            <p className="ratingVal semibold">{safeRating.toFixed(1)}</p>
+            <p className="ratingVal semibold" style={{fontSize: `calc(${safeStarWidth} * 0.8)`}}>{safeRating.toFixed(1)}</p>
             <div className="flex row starsContainer" onMouseOver={() => setIsHovering( ratingSetter !== undefined )} onMouseOut={() => setIsHovering(false)}>
                 {starsIcon.map((ico,idx) => 
                     <React.Fragment key={idx}>
@@ -69,11 +72,15 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
                     </React.Fragment>
                 )}
             </div>
-            <div className="flex vCenter resetScoreBtn" title="Reset score"> 
-                <FontAwesomeIcon icon={faX} 
-                    style={{width: `calc(${safeStarWidth} * 0.5)`}}
-                    className={`resetScoreIcon ${((ratingSetter && rating === 0) || !ratingSetter) && 'hidden'}`}
-                    onClick={() => ratingSetter?.(0)} />
+            <div className="flex vCenter" > 
+                <button 
+                    type="button" 
+                    onClick={() => ratingSetter?.(0)}
+                    className={`resetScoreBtn flex vCenter ${showResetBtn && 'hidden'}`}
+                    title="Reset score">
+                    <FontAwesomeIcon icon={faX} style={{width: `calc(${safeStarWidth} * 0.5)`}} className={`resetScoreIcon `} />
+                </button>
+                
             </div>
         </div>
     )
