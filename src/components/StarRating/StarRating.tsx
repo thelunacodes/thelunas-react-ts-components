@@ -49,18 +49,19 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
     // Handle invalid values 
     const safeRating = Math.min(Math.max(rating, 0), maxRating);
     const safeStarWidth = !CSS.supports("width",starWidth) ? '20px' : starWidth;
+    const ratingValFontSize = `calc(${safeStarWidth} * 0.8)`;
+    const resetScoreIconWidth = `calc(${safeStarWidth} * 0.5)`;
 
     const showResetBtn = !ratingSetter || safeRating === 0;
 
-    
     // Render stars
     let targetRating = isHovering ? ratingHover : safeRating;
     let starsIcon = getStarList(targetRating, maxRating, showEmptyStars);
 
     return (
-        <div className="flex row vCenter">
-            <p className="ratingVal semibold" style={{fontSize: `calc(${safeStarWidth} * 0.8)`}}>{safeRating.toFixed(1)}</p>
-            <div className="flex row starsContainer" onMouseOver={() => setIsHovering( ratingSetter !== undefined )} onMouseOut={() => setIsHovering(false)}>
+        <div className="starRatingMainContainer">
+            <p className="ratingVal" style={{fontSize: ratingValFontSize}}>{safeRating.toFixed(1)}</p>
+            <div className="starsContainer" onMouseOver={() => setIsHovering( ratingSetter !== undefined )} onMouseOut={() => setIsHovering(false)}>
                 {starsIcon.map((ico,idx) => 
                     <React.Fragment key={idx}>
                         <StarIcon icon={ico} 
@@ -72,15 +73,14 @@ export default function StarRating({ starWidth='20px', rating=0, ratingSetter, m
                     </React.Fragment>
                 )}
             </div>
-            <div className="flex vCenter" > 
+            <div> 
                 <button 
                     type="button" 
                     onClick={() => ratingSetter?.(0)}
-                    className={`resetScoreBtn flex vCenter ${showResetBtn && 'hidden'}`}
+                    className={`resetScoreBtn ${showResetBtn && 'hidden'}`}
                     title="Reset score">
-                    <FontAwesomeIcon icon={faX} style={{width: `calc(${safeStarWidth} * 0.5)`}} className={`resetScoreIcon `} />
+                    <FontAwesomeIcon icon={faX} style={{width: resetScoreIconWidth}} className={`resetScoreIcon`} />
                 </button>
-                
             </div>
         </div>
     )

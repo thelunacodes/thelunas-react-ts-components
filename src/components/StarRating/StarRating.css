@@ -1,4 +1,12 @@
+.starRatingMainContainer,
+.starsContainer {
+    display: flex;
+    flex-direction: row;
+}
 
+.starRatingMainContainer {
+    align-items: center;
+}
 
 .starsContainer {
     margin-left: 5px;
@@ -7,7 +15,8 @@
 }
 
 .ratingVal {
-    font-family: var(--default-font   );
+    font-family: Roboto, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
     margin: 0;
 }
 
